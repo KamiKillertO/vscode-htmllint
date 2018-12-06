@@ -74,6 +74,20 @@ connection.onInitialized(() => {
 interface ExampleSettings {
   maxNumberOfProblems: number;
 }
+interface IssueData { 
+  attribute?: string; // E001, E011 
+  /* E011 */
+  format?: string; 
+  value?: string; 
+  /* E023 */ 
+  chars?: string; 
+  desc?: string; 
+  part?: string; 
+  /* E036 */ 
+  width?: number; 
+  /* E037 */ 
+  limit?: number; 
+} 
 
 interface Issue { 
   code: string; 
@@ -81,7 +95,7 @@ interface Issue {
   line: number; 
 
   rule: string; 
-  data: object; 
+  data: IssueData; 
   msg: string;
 } 
 
@@ -239,5 +253,18 @@ documents.listen(connection);
 connection.listen();
 
 function generateIssueMessage(issue: Issue) {
-  return issue.msg || htmllint.messages.renderIssue(issue); 
+  switch(issue.code) { 
+    case 'E001': 
+      return `The attribut "${issue.data.attribute}" is banned`; 
+    case 'E003': 
+      return `The attribut "${issue.data.attribute}" is duplicated`; 
+    case 'E011': 
+      return `Value "${issue.data.value}" of attribut "${issue.data.attribute}" does not respect the format '${issue.data.format}'`; 
+    case 'E036': 
+      return `Wrong indentation, expected indentation of ${issue.data.width}`; 
+    case 'E037': 
+      return `Only ${issue.data.limit} attributes per line are permitted`; 
+    default:
+      return issue.msg || htmllint.messages.renderIssue(issue); 
+  } 
 }
