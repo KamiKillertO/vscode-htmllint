@@ -33,6 +33,7 @@ let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 connection.onInitialize((params: InitializeParams) => {
+  debugger;
   let capabilities = params.capabilities;
 
   // Does the client support the `workspace/configuration` request?
@@ -149,9 +150,10 @@ documents.onDidChangeContent(change => {
 });
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
+  debugger
   // In this simple example we get the settings for every validate run.
   let settings = await getDocumentSettings(textDocument.uri);
-
+  // settings.config
   // The validator creates diagnostics for all uppercase words length 2 and more
   let text = textDocument.getText();
   let pattern = /\b[A-Z]{2,}\b/g;
@@ -225,25 +227,26 @@ connection.onCompletionResolve(
   }
 );
 
-/*
 connection.onDidOpenTextDocument((params) => {
+  debugger
   // A text document got opened in VSCode.
   // params.uri uniquely identifies the document. For documents store on disk this is a file URI.
   // params.text the initial full content of the document.
   connection.console.log(`${params.textDocument.uri} opened.`);
 });
 connection.onDidChangeTextDocument((params) => {
+  debugger
   // The content of a text document did change in VSCode.
   // params.uri uniquely identifies the document.
   // params.contentChanges describe the content changes to the document.
   connection.console.log(`${params.textDocument.uri} changed: ${JSON.stringify(params.contentChanges)}`);
 });
 connection.onDidCloseTextDocument((params) => {
+  debugger
   // A text document got closed in VSCode.
   // params.uri uniquely identifies the document.
   connection.console.log(`${params.textDocument.uri} closed.`);
 });
-*/
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
