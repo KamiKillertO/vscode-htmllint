@@ -14,6 +14,27 @@
     "onLanguage:html"
   ],
   "main": "./client/out/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "HTMLLINT",
+      "properties": {
+        "htmllint.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Control whether htmllint is enabled or not."
+        },
+        "htmllint.config": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "default": null,
+          "description": "A stylelint configuration object."
+        }
+      }
+    }
+  },
   "scripts": {
     "vscode:prepublish": "cd client && npm run update-vscode && cd .. && npm run compile",
     "compile": "tsc -b",
