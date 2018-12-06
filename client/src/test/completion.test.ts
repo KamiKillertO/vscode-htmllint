@@ -8,7 +8,7 @@ import * as assert from 'assert';
 import { getDocUri, activate } from './helper';
 
 describe('Should do completion', () => {
-  const docUri = getDocUri('completion.txt');
+  const docUri = getDocUri('completion.html');
 
   it('Completes JS/TS in txt file', async () => {
     await testCompletion(docUri, new vscode.Position(0, 0), {
@@ -33,8 +33,6 @@ async function testCompletion(
     docUri,
     position
   )) as vscode.CompletionList;
-
-  assert.equal(actualCompletionList.items.length, expectedCompletionList.items.length);
   expectedCompletionList.items.forEach((expectedItem, i) => {
     const actualItem = actualCompletionList.items[i];
     assert.equal(actualItem.label, expectedItem.label);
