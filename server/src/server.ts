@@ -14,8 +14,11 @@ import {
   DidChangeConfigurationNotification,
   CompletionItem,
   CompletionItemKind,
-  TextDocumentPositionParams
+  TextDocumentPositionParams,
+  Position,
+  Range
 } from 'vscode-languageserver';
+import * as htmllint from 'htmllint'; 
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
@@ -71,6 +74,30 @@ connection.onInitialized(() => {
 interface ExampleSettings {
   maxNumberOfProblems: number;
 }
+interface IssueData { 
+  attribute?: string; // E001, E011 
+  /* E011 */
+  format?: string; 
+  value?: string; 
+  /* E023 */ 
+  chars?: string; 
+  desc?: string; 
+  part?: string; 
+  /* E036 */ 
+  width?: number; 
+  /* E037 */ 
+  limit?: number; 
+} 
+
+interface Issue { 
+  code: string; 
+  column: number; 
+  line: number; 
+
+  rule: string; 
+  data: IssueData; 
+  msg: string;
+} 
 
 // The global settings, used when the `workspace/configuration` request is not supported by the client.
 // Please note that this is not the case when using this server with the client provided in this example
@@ -132,37 +159,26 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 
   let problems = 0;
   let diagnostics: Diagnostic[] = [];
-  while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-    problems++;
-    let diagnosic: Diagnostic = {
-      severity: DiagnosticSeverity.Warning,
-      range: {
-        start: textDocument.positionAt(m.index),
-        end: textDocument.positionAt(m.index + m[0].length)
-      },
-      message: `${m[0]} is all uppercase.`,
-      source: 'ex'
+
+  const issues :Issue[] = await htmllint(text);
+
+  issues.forEach((issue: Issue) => {
+    const start = Position.create(issue.line - 1, 0); 
+    const end = Position.create(issue.line, 0); 
+    const range = Range.create(start, end); 
+    const line = textDocument.getText(range); 
+    let diagnostic: Diagnostic = { 
+      severity: DiagnosticSeverity.Error, 
+      range: { 
+        start: Position.create(issue.line, issue.column), 
+        end: Position.create(issue.line, issue.column + 1) 
+      }, 
+      code: issue.rule,
+      source: 'htmllint',
+      message: generateIssueMessage(issue)
     };
-    if (hasDiagnosticRelatedInformationCapability) {
-      diagnosic.relatedInformation = [
-        {
-          location: {
-            uri: textDocument.uri,
-            range: Object.assign({}, diagnosic.range)
-          },
-          message: 'Spelling matters'
-        },
-        {
-          location: {
-            uri: textDocument.uri,
-            range: Object.assign({}, diagnosic.range)
-          },
-          message: 'Particularly for names'
-        }
-      ];
-    }
-    diagnostics.push(diagnosic);
-  }
+    diagnostics.push(diagnostic);
+  });
 
   // Send the computed diagnostics to VSCode.
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
@@ -235,3 +251,20 @@ documents.listen(connection);
 
 // Listen on the connection
 connection.listen();
+
+function generateIssueMessage(issue: Issue) {
+  switch(issue.code) { 
+    case 'E001': 
+      return `The attribut "${issue.data.attribute}" is banned`; 
+    case 'E003': 
+      return `The attribut "${issue.data.attribute}" is duplicated`; 
+    case 'E011': 
+      return `Value "${issue.data.value}" of attribut "${issue.data.attribute}" does not respect the format '${issue.data.format}'`; 
+    case 'E036': 
+      return `Wrong indentation, expected indentation of ${issue.data.width}`; 
+    case 'E037': 
+      return `Only ${issue.data.limit} attributes per line are permitted`; 
+    default:
+      return issue.msg || htmllint.messages.renderIssue(issue); 
+  } 
+}
