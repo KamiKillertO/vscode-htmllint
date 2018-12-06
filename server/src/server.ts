@@ -130,7 +130,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
   if (!result) {
     result = connection.workspace.getConfiguration({
       scopeUri: resource,
-      section: 'htmllintServer'
+      section: 'htmllint'
     });
     documentSettings.set(resource, result);
   }

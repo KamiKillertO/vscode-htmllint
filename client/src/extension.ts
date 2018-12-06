@@ -37,9 +37,11 @@ export function activate(context: ExtensionContext) {
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
+		diagnosticCollectionName: 'htmllint',
     // Register the server for plain html documents
     documentSelector: [{ scheme: 'file', language: 'html' }],
     synchronize: {
+      configurationSection: 'htmllint',
       // Notify the server about file changes to '.htmllintrc files contained in the workspace
       fileEvents: workspace.createFileSystemWatcher('**/.htmllintrc')
     }
@@ -47,7 +49,7 @@ export function activate(context: ExtensionContext) {
 
   // Create the language client and start the client.
   client = new LanguageClient(
-    'htmllintServer',
+    'htmllint',
     'Htmllint Language Server',
     serverOptions,
     clientOptions
