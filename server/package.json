@@ -1,15 +1,16 @@
 {
-  "name": "lsp-sample-server",
+  "name": "htmllint-server",
   "description": "Example implementation of a language server in node.",
   "version": "1.0.0",
-  "author": "Microsoft Corporation",
-  "license": "MIT",
+  "license": "Apache License 2.0",
+  "author": "Benjamin JEGARD",
+  "publisher": "kamikillerto",
   "engines": {
     "node": "*"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-extension-samples"
+    "url": "https://github.com/KamiKillertO/vscode-htmllint"
   },
   "dependencies": {
     "vscode-languageserver": "^4.1.3"
