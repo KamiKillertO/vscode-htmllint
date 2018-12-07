@@ -16,10 +16,13 @@ import {
   CompletionItemKind,
   TextDocumentPositionParams,
   Position,
-  Range
+  Range,
+  Files
 } from 'vscode-languageserver';
 import * as htmllint from 'htmllint'; 
-
+import * as pkgDir from 'pkg-dir';
+import * as path from 'path';
+import * as fs from 'fs';
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 let connection = createConnection(ProposedFeatures.all);
@@ -130,7 +133,7 @@ function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
   if (!result) {
     result = connection.workspace.getConfiguration({
       scopeUri: resource,
-      section: 'htmllintServer'
+      section: 'htmllint'
     });
     documentSettings.set(resource, result);
   }
@@ -148,10 +151,19 @@ documents.onDidChangeContent(change => {
   validateTextDocument(change.document);
 });
 
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-  // In this simple example we get the settings for every validate run.
-  let settings = await getDocumentSettings(textDocument.uri);
+async function getLocaleConfig(documentPath) {
+  let configPath = path.join(path.parse(documentPath).dir, '.htmllintrc');
+  if (fs.existsSync(configPath) === false) {
+    configPath = path.join(await pkgDir(documentPath), '.htmllintrc');
+  }
+  return fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
+}
 
+async function validateTextDocument(textDocument: TextDocument): Promise<void> {
+    // In this simple example we get the settings for every validate run.
+  let settings = await getDocumentSettings(textDocument.uri);
+  let options = await getLocaleConfig(Files.uriToFilePath(textDocument.uri));
+  // settings.config
   // The validator creates diagnostics for all uppercase words length 2 and more
   let text = textDocument.getText();
   let pattern = /\b[A-Z]{2,}\b/g;
@@ -160,7 +172,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   let problems = 0;
   let diagnostics: Diagnostic[] = [];
 
-  const issues :Issue[] = await htmllint(text);
+  const issues :Issue[] = await htmllint(text, options);
 
   issues.forEach((issue: Issue) => {
     const start = Position.create(issue.line - 1, 0); 
@@ -225,25 +237,26 @@ connection.onCompletionResolve(
   }
 );
 
-/*
 connection.onDidOpenTextDocument((params) => {
+  debugger
   // A text document got opened in VSCode.
   // params.uri uniquely identifies the document. For documents store on disk this is a file URI.
   // params.text the initial full content of the document.
   connection.console.log(`${params.textDocument.uri} opened.`);
 });
 connection.onDidChangeTextDocument((params) => {
+  debugger
   // The content of a text document did change in VSCode.
   // params.uri uniquely identifies the document.
   // params.contentChanges describe the content changes to the document.
   connection.console.log(`${params.textDocument.uri} changed: ${JSON.stringify(params.contentChanges)}`);
 });
 connection.onDidCloseTextDocument((params) => {
+  debugger
   // A text document got closed in VSCode.
   // params.uri uniquely identifies the document.
   connection.console.log(`${params.textDocument.uri} closed.`);
 });
-*/
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

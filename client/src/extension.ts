@@ -10,7 +10,8 @@ import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
-  TransportKind
+  TransportKind,
+  SettingMonitor
 } from 'vscode-languageclient';
 
 let client: LanguageClient;
@@ -37,24 +38,38 @@ export function activate(context: ExtensionContext) {
 
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
+		diagnosticCollectionName: 'htmllint',
     // Register the server for plain html documents
     documentSelector: [{ scheme: 'file', language: 'html' }],
     synchronize: {
+      configurationSection: 'htmllint',
       // Notify the server about file changes to '.htmllintrc files contained in the workspace
       fileEvents: workspace.createFileSystemWatcher('**/.htmllintrc')
+    },
+    middleware: {
+      didOpen: (document, next) => {
+        // debugger
+        next(document);
+      },
+      didChange: (event, next) => {
+        // debugger
+        next(event);
+      },
     }
   };
 
   // Create the language client and start the client.
   client = new LanguageClient(
-    'htmllintServer',
+    'htmllint',
     'Htmllint Language Server',
     serverOptions,
     clientOptions
   );
 
   // Start the client. This will also launch the server
-  client.start();
+  // client.start();
+    // debugger
+  context.subscriptions.push(new SettingMonitor(client, 'htmllint.enable').start());
 }
 
 export function deactivate(): Thenable<void> | undefined {
