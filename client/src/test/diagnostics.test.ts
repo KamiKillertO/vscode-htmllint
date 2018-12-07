@@ -8,15 +8,22 @@ import * as assert from 'assert';
 import { getDocUri, activate } from './helper';
 
 describe('Should get diagnostics', () => {
-  const docUri = getDocUri('diagnostics.html');
 
-  it('Diagnoses uppercase texts', async () => {
-    // await testDiagnostics(docUri, [
-    //   { message: 'ANY is all uppercase.', range: toRange(0, 0, 0, 3), severity: vscode.DiagnosticSeverity.Warning, source: 'ex' },
-    //   { message: 'ANY is all uppercase.', range: toRange(0, 14, 0, 17), severity: vscode.DiagnosticSeverity.Warning, source: 'ex' },
-    //   { message: 'OS is all uppercase.', range: toRange(0, 18, 0, 20), severity: vscode.DiagnosticSeverity.Warning, source: 'ex' }
-    // ]);
-    assert.ok(true);
+  // it('Should use htmllint default rules', async () => {
+  //   const docUri = getDocUri('diagnostics.html');
+  //   await testDiagnostics(docUri, [
+  //     { code: 'indent-style', range: toRange(3, 1, 3, 2), severity: vscode.DiagnosticSeverity.Error, source: 'htmllint', message: '' },
+  //     { code: 'indent-style', range: toRange(8, 1, 8, 2), severity: vscode.DiagnosticSeverity.Error, source: 'htmllint', message: '' },
+  //     { code: 'indent-style', range: toRange(9, 1, 9, 2), severity: vscode.DiagnosticSeverity.Error, source: 'htmllint', message: '' },
+  //     { code: 'indent-style', range: toRange(11, 1, 11, 2), severity: vscode.DiagnosticSeverity.Error, source: 'htmllint', message: '' }
+  //   ]);
+  // });
+
+  it('Should use config htmlint rules using local .htmllinrc file', async () => {
+    const docUri = getDocUri('with-config-file/diagnostics.html');
+    await testDiagnostics(docUri, [
+    ]);
+
   });
 });
 
@@ -30,12 +37,11 @@ async function testDiagnostics(docUri: vscode.Uri, expectedDiagnostics: vscode.D
   await activate(docUri);
 
   const actualDiagnostics = vscode.languages.getDiagnostics(docUri);
-
   assert.equal(actualDiagnostics.length, expectedDiagnostics.length);
 
   expectedDiagnostics.forEach((expectedDiagnostic, i) => {
     const actualDiagnostic = actualDiagnostics[i];
-    assert.equal(actualDiagnostic.message, expectedDiagnostic.message);
+    assert.equal(actualDiagnostic.code, expectedDiagnostic.code);
     assert.deepEqual(actualDiagnostic.range, expectedDiagnostic.range);
     assert.equal(actualDiagnostic.severity, expectedDiagnostic.severity);
   });
