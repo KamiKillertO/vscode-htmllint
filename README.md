@@ -1,38 +1,43 @@
-# LSP Example
+# vsocde-htmllint
 
-Heavily documented sample code for https://code.visualstudio.com/docs/extensions/example-language-server.
+[![Build Status](https://travis-ci.org/KamiKillertO/vscode-htmllint.svg?branch=master)](https://travis-ci.org/KamiKillertO/vscode-htmllint)
 
-## Functionality
+A [Visual Studio Code extension](https://code.visualstudio.com/) to lint [HTML](https://www.w3.org/WebPlatform/WG/PubStatus#HTML_specifications) with [htmllint](https://github.com/htmllint/htmllint).
 
-This Language Server works for plain text file. It has the following language features:
-- Completions
-- Diagnostics regenerated on each file change or configuration change
+![screenshot](screenshot.png)
+_If you find some error message not explicit enough, please create an issue [here](https://github.com/KamiKillertO/vscode-htmllint/issues)_
 
-It also includes an End-to-End test.
+## Installation
 
-## Structure
+1. Execute `Extensions: Install Extensions` command from [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
+2. Type `@sort:installs htmllint` into the search form and install the topmost one.
 
-```
-.
-├── client // Language Client
-│   ├── src
-│   │   ├── test // End to End tests for Language Client / Server
-│   │   └── extension.ts // Language Client entry point
-├── package.json // The extension manifest.
-└── server // Language Server
-    └── src
-        └── server.ts // Language Server entry point
-```
+Read the [extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery) for more details.
 
-## Running the Sample
+## Usage
 
-- Run `npm install` in this folder. This installs all necessary npm modules in both the client and server folder
-- Open VS Code on this folder.
-- Press Ctrl+Shift+B to compile the client and server.
-- Switch to the Debug viewlet.
-- Select `Launch Client` from the drop down.
-- Run the lauch config.
-- If you want to debug the server as well use the launch configuration `Attach to Server`
-- In the [Extension Development Host] instance of VSCode, open a document in 'plain text' language mode.
-  - Type `j` or `t` to see `Javascript` and `TypeScript` completion.
-  - Enter text content such as `AAA aaa BBB`. The extension will emit diagnostics for all words in all-uppercase.
+This extension automatically validates documents with these [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-id):
+
+* HTML (`html`)
+
+If you have a valid hmllint configuration file `.htmllintrc` (all options available [here](https://github.com/htmllint/htmllint/wiki/Options)) in the current workspace folder the extension will use it. Otherwise, the default configuration of htmllint will be used.
+
+## Extension settings
+
+#### htmllint.enable
+
+Type: `boolean`  
+Default: `true`
+
+Control whether this extension is enabled or not.
+
+<!-- #### stylelint.config
+
+Type: `Object`  
+Default: `null`
+
+Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files. -->
+
+## License
+
+[APACHE 2.0 License](./LICENSE.txt)
