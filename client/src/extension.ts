@@ -45,6 +45,16 @@ export function activate(context: ExtensionContext) {
       configurationSection: 'htmllint',
       // Notify the server about file changes to '.htmllintrc files contained in the workspace
       fileEvents: workspace.createFileSystemWatcher('**/.htmllintrc')
+    },
+    middleware: {
+      didOpen: (document, next) => {
+        // debugger
+        next(document);
+      },
+      didChange: (event, next) => {
+        // debugger
+        next(event);
+      },
     }
   };
 
@@ -56,27 +66,9 @@ export function activate(context: ExtensionContext) {
     clientOptions
   );
 
-  // let noConfigFolders = folders.filter(folder => {
-  // 	let configFiles = ['.eslintrc.js', '.eslintrc.yaml', '.eslintrc.yml', '.eslintrc', '.eslintrc.json'];
-  // 	for (let configFile of configFiles) {
-  // 		if (fs.existsSync(path.join(folder.uri.fsPath, configFile))) {
-  // 			return false;
-  // 		}
-  // 	}
-  // 	return true;
-  // });
-  // if (noConfigFolders.length === 0) {
-  // 	if (folders.length === 1) {
-  // 		Window.showInformationMessage('The workspace already contains an ESLint configuration file.');
-  // 	} else {
-  // 		Window.showInformationMessage('All workspace folders already contain an ESLint configuration file.');
-  // 	}
-  // 	return;
-  // }
-
   // Start the client. This will also launch the server
   // client.start();
-
+    // debugger
   context.subscriptions.push(new SettingMonitor(client, 'htmllint.enable').start());
 }
 

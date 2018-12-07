@@ -16,10 +16,13 @@ import {
   CompletionItemKind,
   TextDocumentPositionParams,
   Position,
-  Range
+  Range,
+  Files
 } from 'vscode-languageserver';
 import * as htmllint from 'htmllint'; 
-
+import * as pkgDir from 'pkg-dir';
+import * as path from 'path';
+import * as fs from 'fs';
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
 let connection = createConnection(ProposedFeatures.all);
@@ -33,7 +36,6 @@ let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 connection.onInitialize((params: InitializeParams) => {
-  debugger;
   let capabilities = params.capabilities;
 
   // Does the client support the `workspace/configuration` request?
@@ -149,10 +151,18 @@ documents.onDidChangeContent(change => {
   validateTextDocument(change.document);
 });
 
+async function getLocaleConfig(documentPath) {
+  let configPath = path.join(path.parse(documentPath).dir, '.htmllintrc');
+  if (fs.existsSync(configPath) === false) {
+    configPath = path.join(await pkgDir(documentPath), '.htmllintrc');
+  }
+  return fs.existsSync(configPath) ? JSON.parse(fs.readFileSync(configPath, 'utf8')) : {};
+}
+
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-  debugger
-  // In this simple example we get the settings for every validate run.
+    // In this simple example we get the settings for every validate run.
   let settings = await getDocumentSettings(textDocument.uri);
+  let options = await getLocaleConfig(Files.uriToFilePath(textDocument.uri));
   // settings.config
   // The validator creates diagnostics for all uppercase words length 2 and more
   let text = textDocument.getText();
@@ -162,7 +172,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   let problems = 0;
   let diagnostics: Diagnostic[] = [];
 
-  const issues :Issue[] = await htmllint(text);
+  const issues :Issue[] = await htmllint(text, options);
 
   issues.forEach((issue: Issue) => {
     const start = Position.create(issue.line - 1, 0); 
