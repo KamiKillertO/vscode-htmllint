@@ -5,8 +5,29 @@
   "author": "Benjamin JEGARD",
   "publisher": "kamikillerto",
   "license": "Apache License 2.0",
-  "version": "0.0.0",
-  "categories": [],
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KamiKillertO/vscode-htmllint"
+  },
+  "bugs": {
+    "url": "https://github.com/kamikillerto/vscode-htmllint/issues"
+  },
+  "homepage": "https://github.com/kamikillerto/vscode-htmllint/blob/master/README.MD",
+  "galleryBanner": {
+    "theme": "light"
+  },
+  "icon": "logo.png",
+  "categories": [
+    "Linters"
+  ],
+  "keywords": [
+    "lint",
+    "hmllint",
+    "html",
+    "validation",
+    "check"
+  ],
   "engines": {
     "vscode": "^1.29.0"
   },

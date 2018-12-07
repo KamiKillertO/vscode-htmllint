@@ -1,7 +1,7 @@
 {
   "name": "htmllint-server",
   "description": "Example implementation of a language server in node.",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "license": "Apache License 2.0",
   "author": "Benjamin JEGARD",
   "publisher": "kamikillerto",
