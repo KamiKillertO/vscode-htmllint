@@ -5,6 +5,7 @@
 A [Visual Studio Code extension](https://code.visualstudio.com/) to lint [HTML](https://www.w3.org/WebPlatform/WG/PubStatus#HTML_specifications) with [htmllint](https://github.com/htmllint/htmllint).
 
 ![screenshot](screenshot.png)
+_If you find some error message not explicit enough, please create an issue [here](https://github.com/KamiKillertO/vscode-htmllint/issues)_
 
 ## Installation
 
