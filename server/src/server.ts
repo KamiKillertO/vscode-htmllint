@@ -175,15 +175,11 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   const issues :Issue[] = await htmllint(text, options);
 
   issues.forEach((issue: Issue) => {
-    const start = Position.create(issue.line - 1, 0); 
-    const end = Position.create(issue.line, 0); 
-    const range = Range.create(start, end); 
-    const line = textDocument.getText(range); 
     let diagnostic: Diagnostic = { 
       severity: DiagnosticSeverity.Error, 
       range: { 
-        start: Position.create(issue.line, issue.column), 
-        end: Position.create(issue.line, issue.column + 1) 
+        start: Position.create(issue.line - 1, issue.column), 
+        end: Position.create(issue.line - 1, issue.column + 1) 
       }, 
       code: issue.rule,
       source: 'htmllint',
