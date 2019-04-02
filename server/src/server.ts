@@ -267,9 +267,9 @@ connection.listen();
 function generateIssueMessage(issue: Issue) {
   switch(issue.code) { 
     case 'E001': 
-      return `The attribut "${issue.data.attribute}" is banned`; 
+      return `The attribute "${issue.data.attribute}" is banned`; 
     case 'E003': 
-      return `The attribut "${issue.data.attribute}" is duplicated`; 
+      return `The attribute "${issue.data.attribute}" is duplicated`; 
     case 'E011': 
       return `Value "${issue.data.value}" of attribut "${issue.data.attribute}" does not respect the format '${issue.data.format}'`; 
     case 'E036': 
