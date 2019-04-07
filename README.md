@@ -1,6 +1,8 @@
-# vsocde-htmllint
+# vsocde-htmllint (**deprecated**)
 
-[![Build Status](https://travis-ci.org/KamiKillertO/vscode-htmllint.svg?branch=master)](https://travis-ci.org/KamiKillertO/vscode-htmllint)
+**Note**: This extension has been deprecated in favor of the [vscode-linthtml](https://marketplace.visualstudio.com/items?itemName=kamikillerto.vscode-linthtml) extension.
+
+------------------
 
 A [Visual Studio Code extension](https://code.visualstudio.com/) to lint [HTML](https://www.w3.org/WebPlatform/WG/PubStatus#HTML_specifications) with [htmllint](https://github.com/htmllint/htmllint).
 

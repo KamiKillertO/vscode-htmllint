@@ -1,4 +1,8 @@
-# Change Log
+# ChangeLog
+
+## [0.2.0]
+
+- Deprecate extension in favor of [vscode-linthtml](https://marketplace.visualstudio.com/items?itemName=kamikillerto.vscode-linthtml)
 
 ## [0.1.2]
 

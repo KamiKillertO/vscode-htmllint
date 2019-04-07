@@ -4,7 +4,7 @@
 * ------------------------------------------------------------------------------------------ */
 
 import * as path from 'path';
-import { workspace, ExtensionContext } from 'vscode';
+import { workspace, ExtensionContext, window } from 'vscode';
 
 import {
   LanguageClient,
@@ -16,7 +16,9 @@ import {
 
 let client: LanguageClient;
 
+
 export function activate(context: ExtensionContext) {
+  window.showWarningMessage('The vscode-htmllint has been deprecated in favor of the [vscode-linthtml](https://marketplace.visualstudio.com/items?itemName=kamikillerto.vscode-linthtml) extension');
   // The server is implemented in node
   let serverModule = context.asAbsolutePath(
     path.join('server', 'out', 'server.js')
